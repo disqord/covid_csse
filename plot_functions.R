@@ -47,11 +47,11 @@ country_confirmed_cases_daily <- function(country, per_country_ts.data){
 	country_extract <- country_extract[order(country_extract$Date),]
 	country_extract$Cases <- c(country_extract$Cases[1],diff(country_extract$Cases))
 
-	
 	myplot <- ggplot(country_extract, aes(x=Date, y=Cases)) +
 		#geom_line(size=0.5) +
 		#geom_ribbon(ymin=0, aes(ymax = Cases), fill="#cc66ff") +
-		geom_bar(stat = "identity", fill = "#cc66ff", col = "#cc66ff") +
+		geom_bar(stat = "identity", fill = "#ff4d94", col = "#ff4d94") +
+		geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs") ,se=FALSE, col="#000099") +
 		scale_x_date(date_breaks = "weeks" , date_labels = "%d-%b") +
 		theme_minimal() +
 		ggtitle(countryname) +
@@ -107,7 +107,15 @@ time_series_stack <- function(p1,p2){
 }
 
 
+##### Plot the cumulative world champs time series
 
+topx_countries_cumulative_cases <- function(per_country_ts.data, topx = 10){
+	
+	
+	
+	
+	
+}
 
 
 
