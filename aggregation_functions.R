@@ -7,7 +7,7 @@ library(reshape2)
 #### Melt, fix date and aggregate confirmed cases per country
 
 
-aggregate_per_country_and_melt <- function(full_set.data){
+aggregate_per_country_and_melt <- function(full_set.data, var.name = "Cases"){
 	
 	### TEST
 	#full_set.data <- ts_global_confirmed.data
@@ -29,7 +29,7 @@ aggregate_per_country_and_melt <- function(full_set.data){
 	molten.agg <- aggregate(value~variable + Country.Region,data = molten, FUN = "sum")
 	
 	### Colnames
-	colnames(molten.agg) <- c("Date","Country","Cases")
+	colnames(molten.agg) <- c("Date","Country",var.name)
 	
 	cat("Data loaded for the following countries:\n")
 	cat(unique(molten.agg$Country),sep = " - ")

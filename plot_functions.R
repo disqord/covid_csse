@@ -17,14 +17,16 @@ country_confirmed_cases_cum <- function(country, per_country_ts.data){
 	#### Country extract
 	countryname <- per_country_ts.data[,"Country"][grep(country,per_country_ts.data[,"Country"])][1]
 	country_extract <- per_country_ts.data[grep(countryname,per_country_ts.data[,"Country"]),]
-
 	
-	myplot <- ggplot(country_extract, aes(x=Date, y=Cases)) +
+	varname <- colnames(country_extract)[3]
+	colnames(country_extract)[3] <- "value"
+	
+	myplot <- ggplot(country_extract, aes(x=Date, y=value)) +
 		geom_line(size=2) +
 		scale_x_date(date_breaks = "weeks" , date_labels = "%d-%b") +
 		theme_minimal() +
 		ggtitle(countryname) +
-		ylab("Cumulative cases") +
+		ylab(paste0("Cumulative ",tolower(varname))) +
 		theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.3))
 	
 	return(myplot)
@@ -32,7 +34,7 @@ country_confirmed_cases_cum <- function(country, per_country_ts.data){
 }
 
 
-country_confirmed_cases_daily <- function(country, per_country_ts.data){
+country_confirmed_cases_daily <- function(country, per_country_ts.data, barfill = "#ff4d94", smoothcol = "#000099"){
 	
 	
 	#### test
@@ -45,17 +47,20 @@ country_confirmed_cases_daily <- function(country, per_country_ts.data){
 	
 	#### cum -> daily: sort by date and use diff to revert cumsum
 	country_extract <- country_extract[order(country_extract$Date),]
-	country_extract$Cases <- c(country_extract$Cases[1],diff(country_extract$Cases))
+	country_extract[,3] <- c(country_extract[,3][1],diff(country_extract[,3]))
+	
+	varname <- colnames(country_extract)[3]
+	colnames(country_extract)[3] <- "value"
 
-	myplot <- ggplot(country_extract, aes(x=Date, y=Cases)) +
+	myplot <- ggplot(country_extract, aes(x=Date, y=value)) +
 		#geom_line(size=0.5) +
 		#geom_ribbon(ymin=0, aes(ymax = Cases), fill="#cc66ff") +
-		geom_bar(stat = "identity", fill = "#ff4d94", col = "#ff4d94") +
-		geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs") ,se=FALSE, col="#000099") +
+		geom_bar(stat = "identity", fill = barfill, col = barfill) +
+		geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs") ,se=FALSE, col=smoothcol) +
 		scale_x_date(date_breaks = "weeks" , date_labels = "%d-%b") +
 		theme_minimal() +
 		ggtitle(countryname) +
-		ylab("Daily cases") +
+		ylab(paste0("Daily ",tolower(varname))) +
 		theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.3))
 	
 	return(myplot)
